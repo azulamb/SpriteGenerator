@@ -9,6 +9,7 @@
     "mbuild": "tsc --project src/main",
     "ins": "cd App & npm i",
     "start": "electron App",
+    "release": "electron-packager App spritegenerator --overwrite --platform=win32 --arch=x64 --electron-version=1.6.2",
     "test": "echo \"Error: no test specified\" && exit 1"
   },
   "author": "Hiroki",
