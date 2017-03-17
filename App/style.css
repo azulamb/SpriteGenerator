@@ -1,0 +1,109 @@
+html
+{
+	height: 100%;
+}
+
+body
+{
+	padding: 0;
+	margin: 0;
+	position: relative;
+	min-height: 100%;
+}
+
+header
+{
+	position: absolute;
+	display: block;
+	width: 100%;
+	height: 150px;
+}
+
+article
+{
+	position: absolute;
+	top: 150px;
+	left: 0;
+	display: block;
+	width: 100%;
+	height: calc( 100% - 200px );
+	overflow: scroll;
+	box-sizing: border-box;
+}
+
+footer
+{
+	position: absolute;
+	bottom: 0;
+	display: block;
+	width: 100%;
+	height: 50px;
+}
+
+#uploader
+{
+	width: 100%;
+	height: 60px;
+	box-sizing: border-box;
+	border: 5px solid #ddd;
+	text-align: center;
+	line-height: 50px;
+}
+
+#list
+{
+	display: block;
+	width: 100%;
+	height: 60px;
+	box-sizing: border-box;
+}
+
+#menu
+{
+	display: block;
+	width: 100%;
+	height: 30px;
+	box-sizing: border-box;
+	list-style: none;
+	padding: 0;
+	margin: 0;
+}
+
+#menu > li
+{
+	display: block;
+	float: left;
+	padding: 0;
+	margin: 0;
+	height: 30px;
+	cursor: pointer;
+	background-color: gray;
+	border-radius: 5px;
+	line-height: 30px;
+}
+
+#menu > li + li
+{
+	margin-left: 5px;
+}
+
+#css
+{
+	display: block;
+	width: 100%;
+	height: 100%;
+	box-sizing: border-box;
+}
+
+#loading
+{
+	display: none;
+	position: absolute;
+	top: 0;
+	left: 0;
+	width: 100%;
+	height: 100%;
+	background-color: rgba( 0, 0, 0, 0.8 );
+}
+
+#loading.open { display: block; }

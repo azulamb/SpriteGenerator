@@ -1,0 +1,19 @@
+{
+  "name": "spritegenerator",
+  "version": "1.0.0",
+  "description": "",
+  "main": "index.js",
+  "scripts": {
+    "build": "npm run ins & npm run rbuild & npm run mbuild",
+    "rbuild": "tsc --project src/render",
+    "mbuild": "tsc --project src/main",
+    "ins": "cd App & npm i",
+    "start": "electron App",
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "author": "Hiroki",
+  "license": "MIT",
+  "devDependencies": {
+    "@types/electron": "1.4.33"
+  }
+}
