@@ -1,6 +1,7 @@
 import * as electron from 'electron';
 import * as path from 'path';
 import * as fs from 'fs';
+const pkg = require( './package.json' );
 const App = electron.app;
 const BrowserWindow = electron.BrowserWindow;
 const ipcMain = electron.ipcMain;
@@ -27,6 +28,7 @@ function createWindow()
 		icon: __dirname + '/icon.png',
 	} );
 
+	win.setTitle( win.getTitle() + ' ver ' + pkg.version );
 
 	win.loadURL('file://' + __dirname + '/index.html');
 

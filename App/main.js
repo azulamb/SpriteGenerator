@@ -3,6 +3,7 @@ Object.defineProperty(exports, "__esModule", { value: true });
 const electron = require("electron");
 const path = require("path");
 const fs = require("fs");
+const pkg = require('./package.json');
 const App = electron.app;
 const BrowserWindow = electron.BrowserWindow;
 const ipcMain = electron.ipcMain;
@@ -15,6 +16,7 @@ function createWindow() {
         height: 400,
         icon: __dirname + '/icon.png',
     });
+    win.setTitle(win.getTitle() + ' ver ' + pkg.version);
     win.loadURL('file://' + __dirname + '/index.html');
     win.on('closed', () => {
     });
