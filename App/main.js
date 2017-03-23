@@ -13,6 +13,7 @@ function createWindow() {
     win = new BrowserWindow({
         width: 400,
         height: 400,
+        icon: __dirname + '/icon.png',
     });
     win.loadURL('file://' + __dirname + '/index.html');
     win.on('closed', () => {

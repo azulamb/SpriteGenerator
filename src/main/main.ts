@@ -24,6 +24,7 @@ function createWindow()
 	{
 		width: 400,
 		height: 400,
+		icon: __dirname + '/icon.png',
 	} );
 
 
