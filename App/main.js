@@ -65,7 +65,6 @@ msg.set('generate', (event, data) => {
         return;
     }
     const dir = data.path ? path.dirname(data.path) : (data.list && 0 < data.list.length ? path.dirname(data.list[0]) : '');
-    console.log(data, dir);
     Dialog.showOpenDialog(win, {
         properties: ['openDirectory'],
         title: 'Select folder',

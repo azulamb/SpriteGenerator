@@ -46,17 +46,23 @@ class App {
             return;
         }
         e.addEventListener('click', () => { this.generate(); }, false);
+        e = document.getElementById('reset');
+        if (!e) {
+            return;
+        }
+        e.addEventListener('click', () => { this.css.value = ''; this.list.value = ''; this.spath = ''; }, false);
         document.body.addEventListener('dragover', noEvent, false);
         document.body.addEventListener('drop', noEvent, false);
-        this.updarea.addEventListener('dragover', (evt) => {
-            evt.stopPropagation();
-            evt.preventDefault();
-            evt.dataTransfer.dropEffect = 'copy';
+        this.updarea.addEventListener('dragover', (event) => {
+            event.stopPropagation();
+            event.preventDefault();
+            event.dataTransfer.dropEffect = 'copy';
         }, false);
         this.updarea.addEventListener('drop', (event) => { this.dropFiles(event); }, false);
         this.initMenu();
     }
     dropFiles(event) {
+        this.nowLoading();
         noEvent(event);
         const list = this.list.value.split('\n').filter((v) => { return !!v; });
         const files = event.dataTransfer.files;
@@ -69,11 +75,11 @@ class App {
         this.list.value = list.sort().join('\n');
         this.generateSprite('sprite', list);
     }
+    nowLoading() { this.loading.classList.add('open'); }
     beforeGenerate() {
-        this.loading.classList.add('open');
+        this.nowLoading();
     }
     afterGenerate(data, updpath) {
-        console.log(data);
         if (updpath) {
             this.spath = data.path;
         }
@@ -83,7 +89,6 @@ class App {
     }
     initMenu() {
         const list = [];
-        list.push({ type: 'sprite', name: 'Sprite' });
         list.forEach((data) => {
             const e = document.createElement('li');
             e.addEventListener('click', () => { this.changePreview(data.type); }, false);
@@ -104,7 +109,7 @@ class App {
     }
     generateSprite(type, list) {
         this.beforeGenerate();
-        this.msg.send(type, { list: list, path: this.spath });
+        this.msg.send(type, { list: list, path: type === 'generate' ? this.spath : '' });
     }
 }
 function noEvent(event) { event.stopPropagation(); event.preventDefault(); }
@@ -114,13 +119,16 @@ document.addEventListener('DOMContentLoaded', () => {
 const ipcRenderer = require('electron').ipcRenderer;
 class Message {
     constructor() {
-        this.events = {};
+        this.events = { null: () => { } };
         ipcRenderer.on('asynchronous-reply', (event, arg) => {
             if (!this.events[arg.type]) {
-                return;
+                return this.events.null(event, arg);
             }
             this.events[arg.type](event, arg.data);
         });
+    }
+    setDefault(type, func) {
+        this.events.null = func;
     }
     set(type, func) {
         this.events[type] = func;

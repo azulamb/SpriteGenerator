@@ -23,3 +23,8 @@ npm run start
 ```
 electron App
 ```
+
+# Other
+
+Use https://github.com/Ensighten/spritesmith
+
