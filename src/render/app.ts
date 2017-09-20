@@ -2,6 +2,7 @@ class App
 {
 	private updarea: HTMLElement;
 	private list: HTMLTextAreaElement;
+	private warning: HTMLElement;
 	private css: HTMLTextAreaElement;
 	private prearea: HTMLElement;
 	private sprite: HTMLImageElement;
@@ -9,6 +10,7 @@ class App
 	private msg: Message;
 	private loading: HTMLElement;
 	private count: number;
+	private warnFiles: string[];
 
 	private spath: string;
 
@@ -18,47 +20,35 @@ class App
 
 		this.count = 0;
 		this.spath = '';
+		this.warnFiles = [];
 
 		this.msg = new Message();
 
 		this.msg.set( 'sprite', ( event, data ) => { this.afterGenerate( data, false ); } );
 		this.msg.set( 'generate', ( event, data ) => { this.afterGenerate( data, true ); } );
 
-		e = document.getElementById( 'uploader' );
-		if ( !e ) { return; }
-		this.updarea = e;
+		this.updarea = <HTMLElement>document.getElementById( 'uploader' );
 
-		e = document.getElementById( 'list' );
-		if ( !e ) { return; }
-		this.list = <HTMLTextAreaElement>e;
+		this.list = <HTMLTextAreaElement>document.getElementById( 'list' );
 
-		e = document.getElementById( 'css' );
-		if ( !e ) { return; }
-		this.css = <HTMLTextAreaElement>e;
+		this.css = <HTMLTextAreaElement>document.getElementById( 'css' );
 
-		e = document.getElementById( 'preview' );
-		if ( !e ) { return; }
-		this.prearea = e;
+		this.prearea = <HTMLElement>document.getElementById( 'preview' );
 
-		e = document.getElementById( 'sprite' );
-		if ( !e ) { return; }
-		this.sprite = <HTMLImageElement>e;
+		this.sprite = <HTMLImageElement>document.getElementById( 'sprite' );
 
-		e = document.getElementById( 'menu' );
-		if ( !e ) { return; }
-		this.menu = <HTMLUListElement>e;
+		this.menu = <HTMLUListElement>document.getElementById( 'menu' );
 
-		e = document.getElementById( 'loading' );
-		if ( !e ) { return; }
-		this.loading = <HTMLUListElement>e;
+		this.loading = <HTMLUListElement>document.getElementById( 'loading' );
 
-		e = document.getElementById( 'generate' );
-		if ( !e ) { return; }
+		e = <HTMLElement>document.getElementById( 'generate' );
 		e.addEventListener( 'click', () => { this.generate(); }, false );
 
-		e = document.getElementById( 'reset' );
-		if ( !e ) { return; }
-		e.addEventListener( 'click', () => { this.css.value = ''; this.list.value = ''; this.spath = ''; }, false );
+		e = <HTMLElement>document.getElementById( 'reset' );
+		e.addEventListener( 'click', () => { this.css.value = ''; this.list.value = ''; this.spath = ''; this.clearWarning(); }, false );
+
+		this.warning = <HTMLElement>document.getElementById( 'errorfile' );
+		this.warning.addEventListener( 'click', () => { this.openErrorLog(); }, false );
 
 		document.body.addEventListener( 'dragover', noEvent, false );
 		document.body.addEventListener( 'drop', noEvent, false );
@@ -87,6 +77,11 @@ class App
 		{
 			if ( 0 <= list.indexOf( files[ i ].path ) ) { continue; }
 			list.push( files[ i ].path );
+			const filename = <string>files[ i ].path.split( /\\|\// ).pop();
+			if ( filename !== encodeURIComponent( filename ) )
+			{
+				this.addWarning( files[ i ].path );
+			}
 		}
 
 		this.list.value = list.sort().join( '\n' );
@@ -143,6 +138,25 @@ class App
 	{
 		this.beforeGenerate();
 		this.msg.send( type, { list: list, path: type === 'generate' ? this.spath : '' } );
+	}
+
+	private clearWarning()
+	{
+		this.warnFiles = [];
+		this.warning.classList.add( 'hidden' );
+	}
+
+	private addWarning( path: string )
+	{
+		this.warnFiles.push( path );
+		this.warning.classList.remove( 'hidden' );
+	}
+
+	private openErrorLog()
+	{
+		const lines = [ 'Files:' ];
+		lines.push( ...this.warnFiles );
+		window.alert( lines.join( '\n' ) );
 	}
 }
 

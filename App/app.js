@@ -3,54 +3,23 @@ class App {
         let e;
         this.count = 0;
         this.spath = '';
+        this.warnFiles = [];
         this.msg = new Message();
         this.msg.set('sprite', (event, data) => { this.afterGenerate(data, false); });
         this.msg.set('generate', (event, data) => { this.afterGenerate(data, true); });
-        e = document.getElementById('uploader');
-        if (!e) {
-            return;
-        }
-        this.updarea = e;
-        e = document.getElementById('list');
-        if (!e) {
-            return;
-        }
-        this.list = e;
-        e = document.getElementById('css');
-        if (!e) {
-            return;
-        }
-        this.css = e;
-        e = document.getElementById('preview');
-        if (!e) {
-            return;
-        }
-        this.prearea = e;
-        e = document.getElementById('sprite');
-        if (!e) {
-            return;
-        }
-        this.sprite = e;
-        e = document.getElementById('menu');
-        if (!e) {
-            return;
-        }
-        this.menu = e;
-        e = document.getElementById('loading');
-        if (!e) {
-            return;
-        }
-        this.loading = e;
+        this.updarea = document.getElementById('uploader');
+        this.list = document.getElementById('list');
+        this.css = document.getElementById('css');
+        this.prearea = document.getElementById('preview');
+        this.sprite = document.getElementById('sprite');
+        this.menu = document.getElementById('menu');
+        this.loading = document.getElementById('loading');
         e = document.getElementById('generate');
-        if (!e) {
-            return;
-        }
         e.addEventListener('click', () => { this.generate(); }, false);
         e = document.getElementById('reset');
-        if (!e) {
-            return;
-        }
-        e.addEventListener('click', () => { this.css.value = ''; this.list.value = ''; this.spath = ''; }, false);
+        e.addEventListener('click', () => { this.css.value = ''; this.list.value = ''; this.spath = ''; this.clearWarning(); }, false);
+        this.warning = document.getElementById('errorfile');
+        this.warning.addEventListener('click', () => { this.openErrorLog(); }, false);
         document.body.addEventListener('dragover', noEvent, false);
         document.body.addEventListener('drop', noEvent, false);
         this.updarea.addEventListener('dragover', (event) => {
@@ -71,6 +40,10 @@ class App {
                 continue;
             }
             list.push(files[i].path);
+            const filename = files[i].path.split(/\\|\//).pop();
+            if (filename !== encodeURIComponent(filename)) {
+                this.addWarning(files[i].path);
+            }
         }
         this.list.value = list.sort().join('\n');
         this.generateSprite('sprite', list);
@@ -110,6 +83,19 @@ class App {
     generateSprite(type, list) {
         this.beforeGenerate();
         this.msg.send(type, { list: list, path: type === 'generate' ? this.spath : '' });
+    }
+    clearWarning() {
+        this.warnFiles = [];
+        this.warning.classList.add('hidden');
+    }
+    addWarning(path) {
+        this.warnFiles.push(path);
+        this.warning.classList.remove('hidden');
+    }
+    openErrorLog() {
+        const lines = ['Files:'];
+        lines.push(...this.warnFiles);
+        window.alert(lines.join('\n'));
     }
 }
 function noEvent(event) { event.stopPropagation(); event.preventDefault(); }

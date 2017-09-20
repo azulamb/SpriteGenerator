@@ -90,6 +90,19 @@ footer
 {
 	background-color: #b0e0e6;
 }
+#menu > #errorfile
+{
+	background-color: #dc143c;
+	color: #f5f5f5;
+}
+#menu > #errorfile:hover
+{
+	background-color: #ff4500;
+}
+#menu > li.hidden
+{
+	display: none;
+}
 
 #menu > li + li
 {
